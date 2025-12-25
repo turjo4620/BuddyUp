@@ -7,10 +7,12 @@ require('dotenv').config();
 const profileRoutes = require('./routes/profileRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const joinRequestRoutes = require('./routes/joinRequestRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // Import utilities
 const { findSuggestedTeammates, findMatchingProjects } = require('./utils/matchingAlgorithm');
 const { handleAIGuidance } = require('./ai/aiChatHandler');
+const { authenticateToken } = require('./controllers/authController');
 const Profile = require('./models/Profile');
 const Project = require('./models/Project');
 
@@ -56,6 +58,7 @@ mongoose.connect(process.env.MONGODB_URI)
   });
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/joinRequests', joinRequestRoutes);
