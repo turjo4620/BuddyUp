@@ -94,6 +94,15 @@ profileSchema.methods.toJSON = function() {
   return profile;
 };
 
+// Database indexes for performance
+profileSchema.index({ username: 1 }); // Already unique, but explicit index
+profileSchema.index({ email: 1 }); // For email lookups
+profileSchema.index({ department: 1 }); // For department filtering
+profileSchema.index({ skills: 1 }); // For skill-based searches
+profileSchema.index({ academicYear: 1 }); // For academic year filtering
+profileSchema.index({ createdAt: -1 }); // For sorting by creation date
+profileSchema.index({ department: 1, academicYear: 1 }); // Compound index for common queries
+
 // Ensure skills and projectInterests arrays are not empty when provided
 profileSchema.pre('save', function(next) {
   if (this.skills && this.skills.length === 0) {

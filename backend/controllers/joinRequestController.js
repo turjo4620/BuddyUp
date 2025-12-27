@@ -1,6 +1,7 @@
 const JoinRequest = require('../models/JoinRequest');
 const Project = require('../models/Project');
 const Profile = require('../models/Profile');
+const mongoose = require('mongoose');
 
 // Send join request
 const sendJoinRequest = async (req, res) => {
@@ -166,6 +167,9 @@ const getJoinRequestsByStudent = async (req, res) => {
 
 // Accept/Reject join request
 const updateJoinRequestStatus = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  
   try {
     const { requestId } = req.params;
     const { status, reviewerId } = req.body;
@@ -179,9 +183,11 @@ const updateJoinRequestStatus = async (req, res) => {
 
     const joinRequest = await JoinRequest.findById(requestId)
       .populate('projectId')
-      .populate('studentId');
+      .populate('studentId')
+      .session(session);
 
     if (!joinRequest) {
+      await session.abortTransaction();
       return res.status(404).json({
         success: false,
         message: 'Join request not found'
@@ -189,6 +195,7 @@ const updateJoinRequestStatus = async (req, res) => {
     }
 
     if (joinRequest.status !== 'Pending') {
+      await session.abortTransaction();
       return res.status(400).json({
         success: false,
         message: 'Join request has already been processed'
@@ -197,29 +204,27 @@ const updateJoinRequestStatus = async (req, res) => {
 
     // Verify reviewer is the project owner
     if (joinRequest.projectId.owner.toString() !== reviewerId) {
+      await session.abortTransaction();
       return res.status(403).json({
         success: false,
         message: 'Only project owner can review join requests'
       });
     }
 
-    joinRequest.status = status;
-    joinRequest.reviewedBy = reviewerId;
-    joinRequest.reviewedAt = new Date();
-    await joinRequest.save();
-
-    // If accepted, add student to project members
+    // If accepting, check team size atomically
     if (status === 'Accepted') {
-      const project = joinRequest.projectId;
+      const project = await Project.findById(joinRequest.projectId._id).session(session);
       
       // Check if team is still not full
       if (project.members.length >= project.teamSize) {
+        await session.abortTransaction();
         return res.status(400).json({
           success: false,
           message: 'Project team is now full'
         });
       }
 
+      // Add student to project members atomically
       await Project.findByIdAndUpdate(
         project._id,
         { 
@@ -230,24 +235,37 @@ const updateJoinRequestStatus = async (req, res) => {
               joinedAt: new Date()
             }
           }
-        }
+        },
+        { session }
       );
 
       await Profile.findByIdAndUpdate(
         joinRequest.studentId._id,
-        { $push: { projectsJoined: project._id } }
+        { $push: { projectsJoined: project._id } },
+        { session }
       );
     }
+
+    // Update join request status
+    joinRequest.status = status;
+    joinRequest.reviewedBy = reviewerId;
+    joinRequest.reviewedAt = new Date();
+    await joinRequest.save({ session });
+
+    await session.commitTransaction();
 
     res.status(200).json({
       success: true,
       data: joinRequest
     });
   } catch (error) {
+    await session.abortTransaction();
     res.status(400).json({
       success: false,
       message: error.message
     });
+  } finally {
+    session.endSession();
   }
 };
 

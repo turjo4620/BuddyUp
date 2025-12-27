@@ -1,0 +1,377 @@
+/* Project Research Card Styles */
+
+.project-research-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.project-research-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--status-color, #e2e8f0);
+  transition: height 0.3s ease;
+}
+
+.project-research-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.project-research-card:hover::before {
+  height: 4px;
+}
+
+/* Status Color Variants */
+.project-research-card.status-open {
+  --status-color: #10b981;
+}
+
+.project-research-card.status-progress {
+  --status-color: #3b82f6;
+}
+
+.project-research-card.status-completed {
+  --status-color: #6366f1;
+}
+
+.project-research-card.status-hold {
+  --status-color: #f59e0b;
+}
+
+.project-research-card.status-cancelled {
+  --status-color: #ef4444;
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem 1.5rem 0;
+  margin-bottom: 1rem;
+}
+
+.header-left {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.header-right {
+  flex-shrink: 0;
+}
+
+/* Type Badge */
+.type-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.type-icon {
+  font-size: 0.875rem;
+}
+
+/* Status Badge */
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: rgba(var(--status-rgb, 226, 232, 240), 0.1);
+  color: var(--status-color, #64748b);
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid rgba(var(--status-rgb, 226, 232, 240), 0.2);
+}
+
+.status-icon {
+  font-size: 0.75rem;
+}
+
+/* Posted Date */
+.posted-date {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Card Content */
+.card-content {
+  padding: 0 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.card-title:hover {
+  color: #3b82f6;
+}
+
+.card-description {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* Skills Section */
+.skills-section {
+  margin-bottom: 1rem;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-chip {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  color: #0369a1;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid rgba(3, 105, 161, 0.2);
+  transition: all 0.2s ease;
+}
+
+.skill-chip:hover {
+  background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%);
+  transform: translateY(-1px);
+}
+
+.skill-chip.more-skills {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #64748b;
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
+/* Team Progress */
+.team-progress {
+  margin-bottom: 1rem;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.progress-percentage {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Engagement Stats */
+.engagement-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.stat-icon {
+  font-size: 0.875rem;
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+}
+
+.action-btn.primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.action-btn.secondary {
+  background: white;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+}
+
+.action-btn.secondary:hover:not(:disabled) {
+  background: #f0f9ff;
+}
+
+.action-btn.tertiary {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.action-btn.tertiary:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.btn-icon {
+  font-size: 0.875rem;
+}
+
+/* List View Modifications */
+.project-research-card.list {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.project-research-card.list .card-header {
+  padding: 0;
+  margin-bottom: 0;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+}
+
+.project-research-card.list .card-content {
+  flex: 1;
+  padding: 0;
+  margin-bottom: 0;
+  margin-right: 1.5rem;
+}
+
+.project-research-card.list .card-actions {
+  padding: 0;
+  border-top: none;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: 120px;
+}
+
+.project-research-card.list .skills-list {
+  max-width: 300px;
+}
+
+.project-research-card.list .team-progress {
+  max-width: 200px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .project-research-card.list {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .project-research-card.list .card-header,
+  .project-research-card.list .card-content {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .project-research-card.list .card-actions {
+    width: auto;
+    flex-direction: row;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1rem;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+  }
+  
+  .engagement-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  
+  .header-left {
+    width: 100%;
+  }
+  
+  .action-btn {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.6rem;
+  }
+}

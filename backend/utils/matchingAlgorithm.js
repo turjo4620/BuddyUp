@@ -1,4 +1,4 @@
-// Basic matching algorithm to find suggested teammates for projects
+// Enhanced matching algorithm for dynamic profile suggestions
 
 const calculateSkillOverlap = (studentSkills, requiredSkills) => {
   if (!requiredSkills || requiredSkills.length === 0) return 0;
@@ -14,23 +14,127 @@ const calculateSkillOverlap = (studentSkills, requiredSkills) => {
   return matchingSkills.length;
 };
 
-const calculateMatchScore = (studentSkills, requiredSkills, studentInterests, projectTitle, projectDescription) => {
-  // Primary scoring based on skill overlap
-  const skillMatches = calculateSkillOverlap(studentSkills, requiredSkills);
-  const skillScore = (skillMatches / Math.max(requiredSkills.length, 1)) * 100;
+const calculateDomainMatch = (studentInterests, projectTitle, projectDescription, projectCategory) => {
+  if (!studentInterests || studentInterests.length === 0) return 0;
+  
+  const projectText = `${projectTitle} ${projectDescription} ${projectCategory || ''}`.toLowerCase();
+  const matchingInterests = studentInterests.filter(interest =>
+    projectText.includes(interest.toLowerCase()) ||
+    interest.toLowerCase().split(' ').some(word => projectText.includes(word))
+  );
+  
+  return matchingInterests.length;
+};
 
-  // Secondary scoring based on interest alignment
-  let interestScore = 0;
-  if (studentInterests && studentInterests.length > 0) {
-    const projectText = `${projectTitle} ${projectDescription}`.toLowerCase();
-    const matchingInterests = studentInterests.filter(interest =>
-      projectText.includes(interest.toLowerCase())
-    );
-    interestScore = (matchingInterests.length / studentInterests.length) * 30;
+const calculateAcademicAlignment = (studentDepartment, studentYear, projectRequirements) => {
+  let score = 0;
+  
+  // Department relevance
+  if (projectRequirements?.preferredDepartments?.includes(studentDepartment)) {
+    score += 20;
   }
+  
+  // Academic year suitability
+  const yearMapping = {
+    '1st Year': 1, '2nd Year': 2, '3rd Year': 3, '4th Year': 4, 
+    'Graduate': 5, 'PhD': 6
+  };
+  
+  const studentLevel = yearMapping[studentYear] || 3;
+  const minLevel = yearMapping[projectRequirements?.minAcademicYear] || 1;
+  
+  if (studentLevel >= minLevel) {
+    score += 10;
+  }
+  
+  return score;
+};
 
-  // Combined score (70% skills, 30% interests)
-  return Math.round((skillScore * 0.7) + (interestScore * 0.3));
+const calculateExperienceMatch = (studentProfile, projectData) => {
+  if (!studentProfile || !projectData) return 0;
+  
+  const projectsCompleted = studentProfile.projectsJoined?.length || 0;
+  const experienceLevel = projectData.experienceLevel || 'Beginner';
+  
+  const experienceMapping = {
+    'Beginner': { min: 0, max: 2 },
+    'Intermediate': { min: 1, max: 4 },
+    'Advanced': { min: 3, max: 10 }
+  };
+  
+  const range = experienceMapping[experienceLevel] || experienceMapping['Beginner'];
+  
+  if (projectsCompleted >= range.min && projectsCompleted <= range.max) {
+    return 20;
+  } else if (projectsCompleted > range.max) {
+    return 15; // Overqualified
+  }
+  
+  return 5; // Minimal score for underqualified
+};
+
+const calculateMatchScore = (studentSkills, requiredSkills, studentInterests, projectTitle, projectDescription, studentProfile, projectData) => {
+  // Skill matching
+  const skillMatches = calculateSkillOverlap(studentSkills, requiredSkills);
+  const skillScore = skillMatches > 0 ? (skillMatches / Math.max(requiredSkills.length, 1)) * 40 : 0;
+
+  // Interest matching
+  const interestMatches = calculateDomainMatch(studentInterests, projectTitle, projectDescription, projectData?.category);
+  const interestScore = interestMatches > 0 ? (interestMatches / Math.max(studentInterests.length, 1)) * 30 : 0;
+
+  // Academic alignment scoring
+  const academicScore = calculateAcademicAlignment(
+    studentProfile?.department, 
+    studentProfile?.academicYear, 
+    projectData?.requirements
+  );
+
+  // Experience factor
+  const experienceScore = calculateExperienceMatch(studentProfile, projectData);
+
+  // Combined score with weighted factors
+  const totalScore = Math.round(
+    (skillScore * 0.5) + 
+    (interestScore * 0.25) + 
+    (academicScore * 0.15) + 
+    (experienceScore * 0.1)
+  );
+
+  return Math.min(totalScore, 100); // Cap at 100%
+};
+
+const generateSuggestionReason = (student, project, matchedSkills, matchedInterests) => {
+  const reasons = [];
+  
+  if (matchedSkills.length > 0) {
+    reasons.push(`Strong match in ${matchedSkills.slice(0, 3).join(', ')}`);
+  }
+  
+  if (matchedInterests.length > 0) {
+    reasons.push(`Shared interests in ${matchedInterests.slice(0, 2).join(', ')}`);
+  }
+  
+  if (student.department && project.category) {
+    reasons.push(`${student.department} background aligns with ${project.category}`);
+  }
+  
+  const experienceLevel = student.projectsJoined?.length || 0;
+  if (experienceLevel > 3) {
+    reasons.push(`Experienced collaborator with ${experienceLevel} projects`);
+  }
+  
+  return reasons.length > 0 
+    ? reasons.join('; ') 
+    : 'Good potential match based on profile analysis';
+};
+
+const calculateMatchingSkills = (studentSkills, requiredSkills) => {
+  return studentSkills.filter(skill => 
+    requiredSkills.some(required => 
+      required.toLowerCase().includes(skill.toLowerCase()) ||
+      skill.toLowerCase().includes(required.toLowerCase())
+    )
+  );
 };
 
 const findSuggestedTeammates = async (project, allProfiles) => {
@@ -46,13 +150,20 @@ const findSuggestedTeammates = async (project, allProfiles) => {
 
   // Calculate match scores for each eligible student
   const matches = eligibleStudents.map(student => {
+    const matchedSkills = calculateMatchingSkills(student.skills || [], project.requiredSkills || []);
+    const matchedInterests = calculateDomainMatch(student.projectInterests || [], project.title, project.description, project.category);
+    
     const matchScore = calculateMatchScore(
       student.skills || [],
       project.requiredSkills || [],
       student.projectInterests || [],
       project.title || '',
-      project.description || ''
+      project.description || '',
+      student,
+      project
     );
+
+    const suggestionReason = generateSuggestionReason(student, project, matchedSkills, matchedInterests);
 
     return {
       student: {
@@ -61,33 +172,23 @@ const findSuggestedTeammates = async (project, allProfiles) => {
         department: student.department,
         academicYear: student.academicYear,
         skills: student.skills,
-        projectInterests: student.projectInterests
+        projectInterests: student.projectInterests,
+        bio: student.bio,
+        projectsCompleted: student.projectsJoined?.length || 0
       },
       matchScore,
-      matchingSkills: calculateMatchingSkills(student.skills || [], project.requiredSkills || []),
-      skillOverlapCount: calculateSkillOverlap(student.skills || [], project.requiredSkills || [])
+      matchingSkills: matchedSkills,
+      matchingInterests: matchedInterests,
+      suggestionReason,
+      skillOverlapCount: matchedSkills.length
     };
   });
 
   // Filter students with at least some skill overlap and sort by match score
-  const suggestedTeammates = matches
+  return matches
     .filter(match => match.skillOverlapCount > 0)
     .sort((a, b) => b.matchScore - a.matchScore)
-    .slice(0, 10); // Return top 10 matches
-
-  return suggestedTeammates;
-};
-
-const calculateMatchingSkills = (studentSkills, requiredSkills) => {
-  if (!requiredSkills || requiredSkills.length === 0) return [];
-  if (!studentSkills || studentSkills.length === 0) return [];
-
-  return studentSkills.filter(skill => 
-    requiredSkills.some(required => 
-      required.toLowerCase().includes(skill.toLowerCase()) ||
-      skill.toLowerCase().includes(required.toLowerCase())
-    )
-  );
+    .slice(0, 10);
 };
 
 // Find projects that match a student's skills
@@ -110,7 +211,9 @@ const findMatchingProjects = async (student, allProjects) => {
       project.requiredSkills || [],
       student.projectInterests || [],
       project.title || '',
-      project.description || ''
+      project.description || '',
+      student,
+      project
     );
 
     return {

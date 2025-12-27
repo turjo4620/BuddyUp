@@ -1,0 +1,349 @@
+/* WorkHubCard Styles */
+.work-hub-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.work-hub-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+/* View Mode Styles */
+.work-hub-card.list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.work-hub-card.list .card-content {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.work-hub-card.list .card-actions {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+/* Status Colors */
+.work-hub-card.status-open {
+  border-left: 4px solid #10b981;
+}
+
+.work-hub-card.status-progress {
+  border-left: 4px solid #3b82f6;
+}
+
+.work-hub-card.status-completed {
+  border-left: 4px solid #8b5cf6;
+}
+
+.work-hub-card.status-hold {
+  border-left: 4px solid #f59e0b;
+}
+
+.work-hub-card.status-cancelled {
+  border-left: 4px solid #ef4444;
+}
+
+/* Card Header */
+.card-header {
+  margin-bottom: 16px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.type-status-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.type-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.type-icon {
+  font-size: 14px;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.status-icon {
+  font-size: 12px;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.visibility-indicator {
+  font-size: 14px;
+}
+
+.ownership-indicator {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.owner-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Card Content */
+.card-content {
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1.4;
+}
+
+.card-title:hover {
+  color: #3b82f6;
+}
+
+.card-description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+/* Skills Section */
+.skills-section {
+  margin-bottom: 12px;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-chip {
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #dbeafe;
+}
+
+.skill-chip.more-skills {
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: #e5e7eb;
+}
+
+/* Team Progress */
+.team-progress {
+  margin-bottom: 12px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.progress-label {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.progress-percentage {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.progress-bar {
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Engagement Stats */
+.engagement-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.stat-icon {
+  font-size: 14px;
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.action-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.action-btn.secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.action-btn.secondary:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn:disabled:hover {
+  transform: none;
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* List View Adjustments */
+.work-hub-card.list .card-title {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.work-hub-card.list .card-description {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.work-hub-card.list .skills-section,
+.work-hub-card.list .team-progress,
+.work-hub-card.list .engagement-stats {
+  margin-bottom: 8px;
+}
+
+.work-hub-card.list .action-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .work-hub-card.list {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .work-hub-card.list .card-content {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .secondary-actions {
+    justify-content: space-between;
+  }
+  
+  .action-btn {
+    flex: 1;
+    text-align: center;
+  }
+}

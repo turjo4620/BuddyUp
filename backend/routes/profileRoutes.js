@@ -15,13 +15,13 @@ router.route('/')
   .get(getProfiles)
   .post(createProfile);
 
+// Specific routes must come before parameterized routes
+router.get('/department/:department', getProfilesByDepartment);
+router.get('/skills/filter', getProfilesBySkills); // Changed from /filter/skills to avoid conflict
+
 router.route('/:id')
   .get(getProfile)
   .put(updateProfile)
   .delete(deleteProfile);
-
-// Additional filtering routes
-router.get('/department/:department', getProfilesByDepartment);
-router.get('/filter/skills', getProfilesBySkills);
 
 module.exports = router;
